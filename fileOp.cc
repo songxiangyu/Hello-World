@@ -2,44 +2,29 @@
 using namespace std;
 using namespace fileOp;
 
-myFile::myFile(const string& fileName, const string& filePath){
-	if(filePath.back() != '/')
+myFile::myFile(const string& fileName,const string& filePath){   
+	if(filePath[filePath.size()-1] != '/') 
 		fileFullName = filePath + '/' + fileName;
 	else
 		fileFullName = filePath + fileName;
 }
 /*open file*/
-myFile::openFile(const string& opType){
-	bool stat = true;
+fstream& myFile::openFile(const string& opType){
 	if(opType == "r"){
 		fs.open(fileFullName.c_str(),fstream::in);
-		fs.seekg(fstream::beg);
-		if(!fs)
-			stat = false;
+		fs.seekg(fstream::beg);   // 
 	}
 	else if(opType == "w"){
 		fs.open(fileFullName.c_str(),fstream::out|fstream::app);
-		if(!fs)
-			stat = false;
 	}
 	else {
-		fs.open(fileFullname.c_str(),fstream::in|fstream::out);
+		fs.open(fileFullName.c_str(),fstream::in|fstream::out|fstream::app);
 		fs.seekg(fstream::beg);
-		if(!fs)
-			stat = false;
 	}
-	if(stat == false){
-		cout << "open file failed" << end;
-		return -1;
-	}
+	return fs;
 }
 /*close file*/
 void myFile::closeFile(){
 	fs.close();
 	isClose = true;
-}
-myFile::~myFile(){
-	if(!isClose){
-		fs.close();
-	}
 }

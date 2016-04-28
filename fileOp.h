@@ -9,13 +9,14 @@
 #include<iostream>
 #include<vector>
 #include <string>
+#include <map>
+#include <fstream>
 using namespace std;
 namespace fileOp{
 	class myFile{
 		public:
-			myFile(const string& fileName,const string& filePath=".\");
-			virtual ~myFile();
-			void openFile();
+			myFile(const string& fileName,const string& filePath);
+			fstream& openFile(const string&);
 			void closeFile();
 		private:
 			fstream fs;

@@ -3,6 +3,7 @@
 #include <vector>
 #include <sstream>
 #include <boost/algorithm/string.hpp>
+#include <string>
 using namespace std;
 using namespace fileOp;
 int main(int argc,char** argv){
@@ -10,33 +11,34 @@ int main(int argc,char** argv){
 		cout << "usage:./updateKeywords {sourcefile} {keywordsfile} {result.txt}" << endl;
 		return -1;
 	}
-	myFile sourceFile(argv[1]);
-	myFile keywordsFile(argv[2]);
-	myFile resultFile(argv[3]);
-	sourceFile.open("r");
-	keywordsFile.open("r");
-	resultFile.open("w");
-	result
-	map<string,string> kmap;
+	myFile sourceFile(argv[1],"./");
+	myFile keywordsFile(argv[2],"./");
+	myFile resultFile(argv[3],"./");
+	fstream &sf = sourceFile.openFile(string("r"));
+	fstream &kf = keywordsFile.openFile(string("r"));
+	fstream &rf = resultFile.openFile(string("w"));
+	map<string,string>  kmap; //read keywordsfile to the map 
 	string line;
 	string word;
 	string replaceWord;
-	while(getline(keywordsFile(keywordsFile.fs,line),keywordsFile.fs)){
+	/*read from keywordsfile and insert into map*/
+	while(getline(kf,line)){ 
 		istringstream readline(line);
-		line >> word >> replaceWord; 
+		readline >> word >> replaceWord; 
 		kmap.insert(make_pair<string,string>(word,replaceWord));
 	}
-	while(getline(sourceFile.fs,line),sourceFile.fs){
+	while(getline(sf,line),sf){
 		istringstream readline(line);
-		while(readline >> word){
-			map<string,string>::iterator it = kmap.find(word);
+		//for every word from sourcefile, compare with the map.key
+		while(readline >> word){  
+			map<string,string>::iterator it = kmap.find(word);//if found, replece it 
 			if(it != kmap.end()){
-				resultFile.fs << kmap[word];
+				rf << kmap[word];
 			}else{
-				resultFile.fs << word;
+				rf << word;  //else, write it to the resultFile
 			}
 		}
-		resultFile.fs << "\n" << endl;
+		rf << "\n" << endl;
 	}
 	return 0;
 }
